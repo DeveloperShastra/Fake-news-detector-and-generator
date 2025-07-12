@@ -17,6 +17,7 @@ import os
 import re
 import torch
 import requests
+from difflib import SequenceMatcher  
 
 warnings.filterwarnings("ignore")
 
@@ -58,10 +59,10 @@ def predict_news(text):
         probs = torch.softmax(logits, dim=1).cpu().numpy()[0]
         pred = np.argmax(probs)
         confidence = float(np.max(probs))
-    if confidence < 0.8:
+    if confidence < 0.6:
         label = 'Uncertain'
     else:
-        label = 'Real News' if pred <=0.9 else 'Fake News'
+        label = 'Real News' if pred == 1 else 'Fake News'
     explanation = f"Confidence: {confidence*100:.2f}%"
     return label, confidence, explanation
 
@@ -145,14 +146,30 @@ def predict():
 
     google_results = search_google(news)
     newsapi_results = search_newsapi(news)
-    matched_google = [g for g in google_results if news.lower() in g.lower()]
-    matched_newsapi = [n for n in newsapi_results if news.lower() in n.lower()]
+
+    def is_news_matched(news, results, threshold=0.5):
+        news_tokens = set(news.lower().split())
+        if not news_tokens:
+            return False
+        for result in results:
+            result_tokens = set(result.lower().split())
+            common_tokens = news_tokens & result_tokens
+            match_ratio = len(common_tokens) / len(news_tokens)
+            if match_ratio >= threshold and len(common_tokens) > 5:
+                return True
+        return False
+
+
+
+    matched_google = is_news_matched(news, google_results)
+    matched_newsapi = is_news_matched(news, newsapi_results)
+
 
     if matched_google or matched_newsapi:
         label = 'Real News'
         confidence = 1.0
         explanation = 'Verified via Google or NewsAPI.'
-        sources_info = {'Google': matched_google, 'NewsAPI': matched_newsapi}
+        sources_info = {'Google': google_results if matched_google else [], 'NewsAPI': newsapi_results if matched_newsapi else []}
         return render_template('result.html', prediction=label, confidence=confidence, explanation=explanation, news=news, sources_info=sources_info)
 
     label, confidence, explanation = predict_news(news)
