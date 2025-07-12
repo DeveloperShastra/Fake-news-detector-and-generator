@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Autonews Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    :root {
+      --primary: #E0F7FA;
+      --secondary: #00796B;
+      --accent: #FF7043;
+      --bg: linear-gradient(to right, #e0f7fa, #fff);
+      --text: #222;
+      --card-bg: rgba(255, 255, 255, 0.25);
+      --card-border: rgba(255, 255, 255, 0.4);
+      --glass-blur: blur(18px);
+
+      --dark-bg: #121212;
+      --dark-card-bg: rgba(30, 30, 30, 0.6);
+      --dark-text: #E0E0E0;
+      --dark-accent: #FF8A65;
+      --dark-secondary: #80CBC4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.4s, color 0.4s;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    .dark-mode {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      backdrop-filter: var(--glass-blur);
+      animation: fadeIn 0.8s ease;
+    }
+
+    .dark-mode .card {
+      background: var(--dark-card-bg);
+    }
+
+    h1.title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.4em;
+      text-align: center;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .dark-mode h1.title {
+      color: var(--dark-accent);
+    }
+
+    h2.subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.6em;
+      margin-bottom: 18px;
+      color: var(--secondary);
+      text-align: center;
+    }
+
+    .dark-mode h2.subtitle {
+      color: var(--dark-secondary);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .action-btn,
+    input[type="submit"] {
+      display: inline-block;
+      padding: 14px 30px;
+      font-size: 1em;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    .action-btn:hover,
+    input[type="submit"]:hover {
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .dark-mode .action-btn,
+    .dark-mode input[type="submit"] {
+      background: linear-gradient(135deg, var(--dark-secondary), var(--dark-accent));
+      color: #121212;
+    }
+
+    .dark-mode .action-btn:hover,
+    .dark-mode input[type="submit"]:hover {
+      background: linear-gradient(135deg, var(--dark-accent), var(--dark-secondary));
+    }
+
+    form {
+      display: none;
+      flex-direction: column;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    form.active {
+      display: flex;
+    }
+
+    label {
+      margin-top: 12px;
+      font-weight: 500;
+    }
+
+    input[type="text"], textarea, select {
+      margin-top: 6px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: #f9f9f9;
+      font-size: 1em;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .dark-mode input[type="text"],
+    .dark-mode textarea,
+    .dark-mode select {
+      background: #1e1e1e;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    .toggle-dark {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 1.4em;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--secondary);
+    }
+
+    .dark-mode .toggle-dark {
+      color: var(--dark-accent);
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 25px;
+      }
+
+      h1.title {
+        font-size: 2em;
+      }
+
+      h2.subtitle {
+        font-size: 1.4em;
+      }
+
+      .action-btn {
+        width: 100%;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-dark" onclick="toggleDark()" title="Toggle Theme">
+    <i class="fa fa-moon"></i>
+  </button>
+
+  <div class="card">
+    <h1 class="title">Autonews Pro</h1>
+    <h2 class="subtitle">👋 Hey Visitor, what do you wanna do today?</h2>
+
+    <div class="actions">
+      <button class="action-btn" onclick="showForm('generate')">Generate Fake News</button>
+      <button class="action-btn" onclick="showForm('detect')">Detect Fake News</button>
+    </div>
+
+    <!-- Detect Fake News Form  developed by Shashwat Malhotra-->
+    <form id="detectForm" action="/predict" method="post">
+      <label for="news">Paste news text to check:</label>
+      <textarea name="news" rows="6" required placeholder="Paste or type news article here..."   style="margin-bottom:6px"></textarea>
+      <input type="submit" value="Check If Fake">
+    </form>
+
+    <!-- Generate Fake News Form developed by Shashwat Malhotra-->
+    <form id="generateForm" action="/generate" method="post">
+      <label for="prompt">Enter a prompt to generate fake news:</label>
+      <input type="text" name="prompt" id="prompt" required placeholder="e.g. Aliens land in Delhi airport">
+
+      <label for="style">Style:</label>
+      <select name="style" id="style">
+        <option value="news">News</option>
+        <option value="satire">Satire</option>
+        <option value="blog">Blog</option>
+        <option value="headline">Headline Only</option>
+      </select>
+
+      <label for="length">Length (characters):</label>
+      <select name="length" id="length"  style="margin-bottom:6px">
+        <option value="100">Short</option>
+        <option value="150" selected>Medium</option>
+        <option value="250">Long</option>
+      </select>
+
+      <input type="submit" value="Generate Fake News">
+    </form>
+  </div>
+
+  <script>
+    function toggleDark() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? '1' : '0');
+    }
+
+    function showForm(type) {
+      document.getElementById('generateForm').classList.remove('active');
+      document.getElementById('detectForm').classList.remove('active');
+      if (type === 'generate') {
+        document.getElementById('generateForm').classList.add('active');
+      } else {
+        document.getElementById('detectForm').classList.add('active');
+      }
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem('darkMode') === '1') {
+        document.body.classList.add('dark-mode');
+      }
+    };
+  </script>
+</body>
+</html>

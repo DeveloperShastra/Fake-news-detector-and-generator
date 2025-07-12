@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prediction Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    :root {
+      --primary: #E0F7FA;
+      --secondary: #00796B;
+      --accent: #FF7043;
+      --bg: #FFFFFF;
+      --light-bg: #F5F5F5;
+      --card-bg: #FFFFFF;
+      --text: #263238;
+      --muted-text: #666;
+      --success: #00796B;
+      --danger: #FF7043;
+    }
+
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: linear-gradient(135deg, var(--primary), var(--light-bg));
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark-mode {
+      --primary: #263238;
+      --secondary: #80CBC4;
+      --accent: #FF8A65;
+      --bg: #121212;
+      --card-bg: #1E1E1E;
+      --text: #E0E0E0;
+      --muted-text: #AAAAAA;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 60px auto;
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+      padding: 40px 30px 30px 30px;
+      text-align: center;
+      position: relative;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.5em;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: var(--secondary);
+      letter-spacing: 1px;
+    }
+
+    .dark-mode .title {
+      color: var(--secondary);
+    }
+
+    h2 {
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: var(--secondary);
+      font-size: 1.6em;
+      margin-bottom: 18px;
+    }
+
+    .result {
+      font-size: 1.4em;
+      margin: 30px 0 20px 0;
+      color: var(--secondary);
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    .true-news {
+      background: linear-gradient(90deg, #80CBC4 0%, #A7FFEB 100%);
+      color: var(--text);
+      font-size: 1.3em;
+      font-weight: bold;
+      border-radius: 10px;
+      padding: 12px 0;
+      margin: 18px 0;
+      box-shadow: 0 2px 8px #b2f7ef44;
+      letter-spacing: 1px;
+      animation: pop 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+
+    .fake-news {
+      background: linear-gradient(90deg, var(--accent), #FFB74D);
+      color: #fff;
+      font-size: 1.3em;
+      font-weight: bold;
+      border-radius: 10px;
+      padding: 12px 0;
+      margin: 18px 0;
+      box-shadow: 0 2px 8px #ffb34744;
+      letter-spacing: 1px;
+      animation: pop 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+
+    .confidence {
+      margin: 10px 0 18px 0;
+      font-size: 1.1em;
+      color: var(--muted-text);
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 32px;
+      background: linear-gradient(90deg, var(--secondary) 0%, var(--accent) 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 2px 8px #b2b2ff44;
+    }
+
+    .back-btn:hover {
+      background: linear-gradient(90deg, var(--accent), var(--secondary));
+      transform: translateY(-2px) scale(1.04);
+    }
+
+    .share-btn {
+      display: inline-block;
+      margin-top: 18px;
+      margin-left: 10px;
+      padding: 10px 18px;
+      background: linear-gradient(90deg, var(--secondary), var(--accent));
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 2px 8px #b2f7ef44;
+      cursor: pointer;
+    }
+
+    .share-btn:hover {
+      background: linear-gradient(90deg, var(--accent), var(--secondary));
+      transform: translateY(-2px) scale(1.04);
+    }
+
+    .toggle-dark {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--secondary);
+      font-size: 1.4em;
+      cursor: pointer;
+    }
+
+    .toggle-dark:hover {
+      color: var(--accent);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.7); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 20px 5vw; }
+      .title { font-size: 1.8em; }
+      h2 { font-size: 1.2em; }
+    }
+  </style>
+
+  <script>
+    function setDarkMode(on) {
+      if(on) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', '1');
+      } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('darkMode', '0');
+      }
+    }
+
+    function toggleDark() {
+      setDarkMode(!document.body.classList.contains('dark-mode'));
+    }
+
+    window.onload = function() {
+      if(localStorage.getItem('darkMode') === '1') setDarkMode(true);
+    }
+
+    function shareResult() {
+      const text = `Prediction: {{ prediction }}\nConfidence: {{ confidence|round(2) }}\nNews: {{ news|default('') }}`;
+      if (navigator.share) {
+        navigator.share({ title: 'Fake News Detector Result', text: text });
+      } else {
+        navigator.clipboard.writeText(text);
+        alert('Result copied to clipboard!');
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <button class="toggle-dark" onclick="toggleDark()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+    <div class="title">Autonews Pro</div>
+    <h2><i class="fa fa-robot"></i> Prediction Result</h2>
+
+    {% if prediction == 'Real News' %}
+      <div class="true-news">TRUE NEWS</div>
+    {% elif prediction == 'Fake News' %}
+      <div class="fake-news">FAKE NEWS</div>
+    {% endif %}
+
+    <div class="result">Prediction: <strong>{{ prediction }}</strong></div>
+    <div class="confidence"><i class="fa fa-bolt"></i> {{ explanation }}</div>
+
+    {% if prediction == 'Real News' %}
+      <div class="true-news">TRUE NEWS</div>
+    {% elif prediction == 'Fake News' %}
+      <div class="fake-news">FAKE NEWS</div>
+    {% endif %}
+<!-- developed by Shashwat Malhotra -->
+    <a href="/" class="back-btn"><i class="fa fa-arrow-left"></i> Back to Home</a>
+    <button class="share-btn" onclick="shareResult()"><i class="fa fa-share"></i> Share</button>
+  </div>
+</body>
+</html>

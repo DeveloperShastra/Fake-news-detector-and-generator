@@ -1,0 +1,12 @@
+flask
+transformers
+torch
+scikit-learn
+pandas
+numpy
+requests
+joblib
+tqdm
+beautifulsoup4
+feedparser
+nltk
